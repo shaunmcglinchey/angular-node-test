@@ -1,0 +1,22 @@
+{
+  "name": "angular-node-test",
+  "version": "1.0.0",
+  "description": "Sky Angular-Node test",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shaunmcglinchey/angular-node-test.git"
+  },
+  "author": "Shaun McGlinchey",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/shaunmcglinchey/angular-node-test/issues"
+  },
+  "homepage": "https://github.com/shaunmcglinchey/angular-node-test",
+  "dependencies": {
+    "mongoose": "^4.2.4"
+  }
+}
