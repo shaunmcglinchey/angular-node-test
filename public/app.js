@@ -13,9 +13,15 @@
         vm.getRandomUser = getRandomUser;
         vm.login = login;
         vm.logout = logout;
+        vm.admin = false;
+
+        UserFactory.getUser().then(function success(response) {
+            vm.user = response.data;
+        });
 
         function getRandomUser() {
             RandomUserFactory.getUser().then(function success(response) {
+                console.log('at'+response.data);
                 vm.randomUser = response.data;
             }, handleError);
         }
@@ -23,11 +29,14 @@
         function login(username, password) {
             UserFactory.login(username, password).then(function success(response) {
                vm.user = response.data.user;
+               if(vm.user.username === 'admin')
+                    vm.admin = true;
             }, handleError);
         }
 
         function logout() {
             vm.user = null;
+            vm.admin = false;
             UserFactory.logout();
         }
 
@@ -42,15 +51,16 @@
             getUser: getUser
         };
         function getUser() {
-            return $http.get(API_URL + '/random-user');
+            return $http.get(API_URL + '/auth');
         }
     });
 
-    app.factory('UserFactory', function UserFactory($http, API_URL, AuthTokenFactory) {
+    app.factory('UserFactory', function UserFactory($http, API_URL, AuthTokenFactory, $q) {
        'use strict';
         return {
             login: login,
-            logout: logout
+            logout: logout,
+            getUser: getUser
         };
         function login(username, password) {
             return $http.post(API_URL + '/login', {
@@ -64,6 +74,14 @@
 
         function logout() {
             AuthTokenFactory.setToken();
+        }
+
+        function getUser() {
+            if (AuthTokenFactory.getToken()) {
+                return $http.get(API_URL + '/me');
+            } else {
+                return $q.reject({ data: 'Client has no auth token'});
+            }
         }
     });
 
@@ -101,7 +119,7 @@
             var token = AuthTokenFactory.getToken();
             if (token) {
                 config.headers = config.headers || {};
-                config.headers.Authorization = 'Bearer' + token;
+                config.headers.Authorization = 'Bearer ' + token;
             }
             return config;
         }
