@@ -12,6 +12,7 @@
         var vm = this;
         vm.getRandomUser = getRandomUser;
         vm.login = login;
+        vm.logout = logout;
 
         function getRandomUser() {
             RandomUserFactory.getUser().then(function success(response) {
@@ -23,6 +24,11 @@
             UserFactory.login(username, password).then(function success(response) {
                vm.user = response.data.user;
             }, handleError);
+        }
+
+        function logout() {
+            vm.user = null;
+            UserFactory.logout();
         }
 
         function handleError(response) {
@@ -43,7 +49,8 @@
     app.factory('UserFactory', function UserFactory($http, API_URL, AuthTokenFactory) {
        'use strict';
         return {
-            login: login
+            login: login,
+            logout: logout
         };
         function login(username, password) {
             return $http.post(API_URL + '/login', {
@@ -53,6 +60,10 @@
                 AuthTokenFactory.setToken(response.data.token);
                 return response;
             })
+        }
+
+        function logout() {
+            AuthTokenFactory.setToken();
         }
     });
 
