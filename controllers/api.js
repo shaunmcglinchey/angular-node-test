@@ -25,7 +25,6 @@ exports.me = function(req, res) {
 };
 
 exports.authAttempts = function(req, res) {
-    console.log('req user:'+JSON.stringify(req.user));
     if(!req.user.username === 'admin')
         res.send(401);
     AuthAttempt.find(function(err, attempts) {
