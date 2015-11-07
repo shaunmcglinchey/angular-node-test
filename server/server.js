@@ -1,16 +1,17 @@
 var express = require('express');
 var mongoose = require('mongoose');
-var config = require('./config');
 var bodyParser = require('body-parser');
-var apiController = require('./controllers/api');
-var utils = require('./utils');
 var expressJwt = require('express-jwt');
+var apiController = require('./controllers/api');
+var config = require('./config/config');
+var utils = require('./utils/utils');
+
 
 // create instance of express
 var app = express();
 
-// node middleware for serving our static files (frontend) from the public folder
-app.use(express.static(__dirname + '/public'));
+// node middleware for serving our static files (frontend) from the client folder
+app.use(express.static('./client'));
 
 // Use the body-parser
 app.use(bodyParser.json());
