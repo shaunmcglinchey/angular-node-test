@@ -1,4 +1,7 @@
 module.exports = {
+    app: {
+        port: 5000
+    },
     db: {
         local: 'mongodb://localhost/test'
     },
