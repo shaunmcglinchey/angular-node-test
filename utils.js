@@ -2,7 +2,6 @@ var config = require('./config'),
     _ = require('lodash'),
     AuthAttempt = require('./models/authAttempt');
 
-
 exports.authenticate = function authenticate(req, res, next) {
 
     // check if a username was supplied. If it wasn't send a HTTP 400 - Bad Request
@@ -47,8 +46,6 @@ function logAuthAttempt(ip,username,action){
     attempt.save(function(err) {
         if (err){
             console.log('Could not log authentication attempt');
-        } else {
-            console.log('Authentication attempt logged');
         }
     });
 }
