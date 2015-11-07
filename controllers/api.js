@@ -5,8 +5,6 @@ var express = require('express'),
     jwt = require('jsonwebtoken'),
     mongoose = require('mongoose'),
     AuthAttempt = require('../models/authAttempt');
-var faker = require('faker');
-
 
 // Login endpoint
 exports.login = function(req, res) {
@@ -22,27 +20,19 @@ exports.login = function(req, res) {
     })
 };
 
-exports.secured = function(req, res) {
-    var user = faker.helpers.userCard();
-    res.json(user);
-};
-
 exports.me = function(req, res) {
     res.send(req.user);
 };
 
 exports.authAttempts = function(req, res) {
-    //console.log('att:'+JSON.stringify(utils.getAuthAttempts()));
-   // res.send(utils.getAuthAttempts());
-    var att = [];
-    var mod = mongoose.model('AuthAttempt');
-    mod.find({},function(err, attempts){
-        attempts.forEach(function(record){
-            console.log('Record found:' + record.id);
-            att.push(record);
-        });
+    console.log('req user:'+JSON.stringify(req.user));
+    if(!req.user.username === 'admin')
+        res.send(401);
+    AuthAttempt.find(function(err, attempts) {
+        if (err)
+            res.send(err);
+        res.send(attempts);
     });
-    res.json(att);
 };
 
 
