@@ -6,8 +6,6 @@
 </head>
 <body ng-controller="MainController as vm">
 
-<h1>Get Random User</h1>
-
 <div ng-hide="vm.user">
 	<form ng-submit="vm.login(vm.username, vm.password)">
 		<label>Username: <input type="text" ng-model="vm.username"/></label><br/>
@@ -20,9 +18,19 @@
 	<button ng-click="vm.logout()">Logout</button>
 	<br/>
 </div>
-<div ng-show="vm.admin">
-	<button ng-click="vm.getRandomUser()">Get User</button>
-	<pre ng-bind="vm.randomUser | json"></pre>
+<div ng-show="vm.user.username === 'admin'">
+	<button ng-click="vm.getAuthFeed()">Get Authentication Feed</button>
+	<table>
+		<tr><td>ID</td><td>IP</td><td>Username</td><td>Action</td></tr>
+		<tbody>
+		<tr ng-repeat="attempt in vm.attempts">
+			<td>{{attempt._id}}</td>
+			<td>{{attempt.ip}}</td>
+			<td>{{attempt.username}}</td>
+			<td>{{attempt.action}}</td>
+		</tr>
+		</tbody>
+	</table>
 </div>
 <script src="bower_components/angular/angular.js"></script>
 <script src="app.js"></script>
