@@ -7,36 +7,32 @@
 
     app.constant('API_URL', 'http://localhost:5000/api');
 
-    app.controller('MainController', function(RandomUserFactory, UserFactory){
+    app.controller('MainController', function(AuthFeedFactory, UserFactory){
        'use strict';
         var vm = this;
-        vm.getRandomUser = getRandomUser;
+        vm.getAuthFeed = getAuthFeed;
         vm.login = login;
         vm.logout = logout;
-        vm.admin = false;
 
         UserFactory.getUser().then(function success(response) {
             vm.user = response.data;
         });
 
-        function getRandomUser() {
-            RandomUserFactory.getUser().then(function success(response) {
-                console.log('at'+response.data);
-                vm.randomUser = response.data;
+        function getAuthFeed() {
+            AuthFeedFactory.getAuthFeed().then(function success(response) {
+                vm.attempts = response.data;
             }, handleError);
         }
 
         function login(username, password) {
             UserFactory.login(username, password).then(function success(response) {
                vm.user = response.data.user;
-               if(vm.user.username === 'admin')
-                    vm.admin = true;
             }, handleError);
         }
 
         function logout() {
             vm.user = null;
-            vm.admin = false;
+            vm.admin = null;
             UserFactory.logout();
         }
 
@@ -45,16 +41,18 @@
         }
     });
 
-    app.factory('RandomUserFactory', function($http, API_URL){
+    // A factory responsible for fetching the authentication feed over HTTP
+    app.factory('AuthFeedFactory', function($http, API_URL){
        'use strict';
         return {
-            getUser: getUser
+            getAuthFeed: getAuthFeed
         };
-        function getUser() {
+        function getAuthFeed() {
             return $http.get(API_URL + '/auth');
         }
     });
 
+    // A factory responsible for login, logout, and fetching of a user
     app.factory('UserFactory', function UserFactory($http, API_URL, AuthTokenFactory, $q) {
        'use strict';
         return {
@@ -85,6 +83,9 @@
         }
     });
 
+    /** A factory responsible for managing (getting and setting) tokens
+     *  in the browser local storage
+     */
     app.factory('AuthTokenFactory', function AuthTokenFactory($window) {
         'use strict';
         var store = $window.localStorage;
@@ -109,6 +110,9 @@
 
     });
 
+    /** Intercept any http request, look for an existing JWT token, and if one
+     *  is found add it to the request headers using the Bearer Auth scheme
+     */
     app.factory('AuthInterceptor', function AuthInterceptor(AuthTokenFactory) {
         'use strict';
         return {
