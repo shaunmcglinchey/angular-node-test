@@ -1,5 +1,4 @@
 var config = require('./config'),
-    moment = require('moment'),
     _ = require('lodash'),
     AuthAttempt = require('./models/authAttempt');
 
@@ -32,10 +31,11 @@ exports.authenticate = function authenticate(req, res, next) {
         res.status(401).end('Invalid password');
         return;
     }
+    logAuthAttempt(req.connection.remoteAddress,req.body.username,'AUTH_SUCCESS');
     next();
 };
 
-
+// log the authentication attempt to our database
 function logAuthAttempt(ip,username,action){
 
     var attempt = new AuthAttempt({
@@ -53,38 +53,10 @@ function logAuthAttempt(ip,username,action){
     });
 }
 
-exports.getAuthAttempts = function() {
-
-    var res = [];
-    // get all the users
-    AuthAttempt.find({}, function(err, attempts) {
-        if (err) throw err;
-
-        attempts.forEach(function(attempt) {
-            res.push(attempt);
-        });
-        //console.log(JSON.stringify(attempts));
-        /*
-        attempts.each(function(err, item) {
-           res.push(each);
-        });
-        */
-        // collection of all the attempts
-        //res = attempts;
-    });
-
-    return res;
-}
-
 function isValidUsername (username){
-    console.log('validating username:'+username);
-    if(_.contains(config.users, username.toLowerCase()))
-        return true;
-    return false;
+    return _.contains(config.users, username.toLowerCase());
 }
 
 function isValidPassword(password) {
-    if (password === 'password')
-        return true;
-    return false;
+    return password === 'password';
 }
