@@ -4,6 +4,7 @@
   "description": "Sky Angular-Node test",
   "main": "index.js",
   "scripts": {
+    "start": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -19,8 +20,9 @@
   "dependencies": {
     "body-parser": "^1.14.1",
     "express": "^4.13.3",
+    "express-jwt": "^3.1.0",
+    "jsonwebtoken": "^5.4.1",
     "lodash": "^3.10.1",
-    "moment": "^2.10.6",
     "mongoose": "^4.2.4"
   },
   "devDependencies": {
