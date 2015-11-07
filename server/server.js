@@ -6,7 +6,6 @@ var apiController = require('./controllers/api');
 var config = require('./config/config');
 var utils = require('./utils/utils');
 
-
 // create instance of express
 var app = express();
 
